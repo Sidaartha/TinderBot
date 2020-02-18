@@ -12,7 +12,12 @@ Tinder automate swipe.
   ``` 
    fb_email = 'your_email'
    fb_password = 'your_password'
+   negitive_filter = ['instagram', 'insta', 'ig', 'follow']
+   positive_filter = ['foodie', 'sports']
   ```
+
+  Note : Add things you hate and things you love in a tinder bio to negitive_filter and positive_filter
+
 
 ### Runing the Bot
  - `python run.py`
