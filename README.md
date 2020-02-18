@@ -16,7 +16,7 @@ Tinder automate swipe.
    positive_filter = ['foodie', 'sports']
   ```
 
-  Note : Add things you hate and things you love in a tinder bio to negitive_filter and positive_filter
+  Note : Add things you hate and love to see in a tinder bio to negitive_filter and positive_filter
 
 
 ### Runing the Bot
