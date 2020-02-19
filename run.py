@@ -58,8 +58,10 @@ class TinderBot():
 		expand_btn = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div/div[1]/div[3]/div[6]/button')
 		expand_btn.click()
 		report_btn = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[2]/button')
+		self.driver.execute_script("return arguments[0].scrollIntoView();", report_btn)
 		report_btn.click()
-		option_btn = self.driver.find_element_by_xpath('//*[@id="modal-manager"]/div/div/div[2]/ul/li[2]/button/div[2]')
+		sleep(2)
+		option_btn = self.driver.find_element_by_xpath('//*[@id="modal-manager"]/div/div/div[2]/ul/li[2]/button')
 		option_btn.click()
 		report = self.driver.find_element_by_xpath('//*[@id="modal-manager"]/div/div/div[2]/button')
 		report.click()
@@ -79,26 +81,33 @@ class TinderBot():
 				except:
 					images_no = 0
 				try:
-					description = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div/div[1]/div[3]/div[6]/div/div[2]/div/span[1]')
+					description_span = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div/div[1]/div[3]/div[6]/div/div[2]/div/span[1]')
+					description = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div/div[1]/div[3]/div[6]/div/div[2]/div')
 					child_elements = description.find_elements_by_tag_name('span')
 					description_spans = len(child_elements)
 
-					neg_re_exp = r"\b" + negitive_filter[0] + r"\b "
-					for word in negitive_filter[1:]:
-						neg_re_exp += r"| \b" + word + r"\b "
-					pos_re_exp = r"\b" + positive_filter[0] + r"\b "
-					for word in positive_filter[1:]:
-						pos_re_exp += r"| \b" + word + r"\b "
-					neg_r = re.compile(neg_re_exp, flags=re.I | re.X)
-					pos_r = re.compile(pos_re_exp, flags=re.I | re.X)
-
-					spam_words = []
-					matched_words = []
-					for span in child_elements:
-						spam_words.extend(neg_r.findall(span.text))
-						matched_words.extend(pos_r.findall(span.text))
-					spam_flag = True if spam_words else False
 					description_flag = True
+					spam_flag = False
+
+					if negitive_filter:
+						neg_re_exp = r"\b" + negitive_filter[0] + r"\b "
+						for word in negitive_filter[1:]:
+							neg_re_exp += r"| \b" + word + r"\b "
+						neg_r = re.compile(neg_re_exp, flags=re.I | re.X)
+						spam_words = []
+						for span in child_elements:
+							spam_words.extend(neg_r.findall(span.text))
+						spam_flag = True if spam_words else False
+
+					if positive_filter:
+						pos_re_exp = r"\b" + positive_filter[0] + r"\b "
+						for word in positive_filter[1:]:
+							pos_re_exp += r"| \b" + word + r"\b "
+						pos_r = re.compile(pos_re_exp, flags=re.I | re.X)
+						matched_words = []
+						for span in child_elements:
+							matched_words.extend(pos_r.findall(span.text))
+
 					try:
 						match_score = len(matched_words)/len(positive_filter)
 					except:
@@ -135,10 +144,13 @@ class TinderBot():
 						except:
 							self.close_match()
 				else:
-					report()
-					print("Reported!\tSpam words: {0}".format(spam_words))
-					reports+=1
-					dislikes+=1
+					try:
+						self.report()
+						print("Reported!\tSpam words: {0}".format(spam_words))
+						reports+=1
+						dislikes+=1
+					except Exception as e:
+						print(e)
 			except:
 				pass
 			print("Likes:\t{0}; Dislikes:\t{1}; Reports:\t{2}".format(likes, dislikes, reports))
