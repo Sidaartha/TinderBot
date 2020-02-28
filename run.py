@@ -60,7 +60,7 @@ class TinderBot():
 		report_btn = self.driver.find_element_by_xpath('//*[@id="content"]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[2]/button')
 		self.driver.execute_script("return arguments[0].scrollIntoView();", report_btn)
 		report_btn.click()
-		sleep(2)
+		sleep(3)
 		option_btn = self.driver.find_element_by_xpath('//*[@id="modal-manager"]/div/div/div[2]/ul/li[2]/button')
 		option_btn.click()
 		report = self.driver.find_element_by_xpath('//*[@id="modal-manager"]/div/div/div[2]/button')
